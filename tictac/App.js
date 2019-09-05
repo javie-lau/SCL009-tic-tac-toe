@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { StyleSheet, Text, View,Image,TouchableOpacity,Button, Alert} from 'react-native';
+import { StyleSheet, View,Image,TouchableOpacity,Button, Alert} from 'react-native';
 // import SweetAlert from 'react-native-sweet-alert';
 
 export default class App extends Component {
@@ -21,6 +21,42 @@ export default class App extends Component {
   componentDidMount(){
     this.initializerGame();
   }
+  initializerGame = () =>{
+    this.setState({ gameState: [
+     [0,0,0],
+     [0,0,0],
+     [0,0,0]
+   ]
+
+    });
+
+  
+  }
+  onTilePress(row,col){
+    // no dejar que cambie el icono despues de apretado
+    let value=this.state.gameState[row][col];
+    if (value !== 0) {return;}
+
+
+    // guada el icono recurrente
+    let currentPlayer= this.state.currentPlayer;
+
+    //seleccionando  icono cuando aprete
+    let arr = this.state.gameState.slice();
+    arr[row][col] = currentPlayer;
+    this.setState({gameState:arr});
+    //cambiar al otro jugador
+    let nextPlayer=(currentPlayer === 1)? -1 : 1;
+    this.setState({currentPlayer:nextPlayer});
+
+    //alert del ganadore
+
+    let winner = this.getWinner();
+    if (winner ===1){Alert.alert("l@ ganadr@ es jugador@ Batichica");this.initializerGame();}
+    
+    else if (winner===-1) { Alert.alert("l@ ganadr@ es jugador@ Huason");this.initializerGame();}
+
+   }
   getWinner(){
 
     const NUM_TILES=3;
@@ -53,17 +89,7 @@ export default class App extends Component {
    }
   
 
-   initializerGame = () =>{
-     this.setState({ gameState: [
-      [0,0,0],
-      [0,0,0],
-      [0,0,0]
-    ]
-
-     })
-
    
-   }
    renderIcon =(row, col) =>{
      let value= this.state.gameState [row][col];
      switch(value){
@@ -75,33 +101,9 @@ export default class App extends Component {
 
  
    }
-   onTilePress(row,col){
-    // no dejar que cambie el icono despues de apretado
-    let value=this.state.gameState[row][col];
-    if (value !== 0) {return;}
-
-
-    // guada el icono recurrente
-    let currentPlayer= this.state.currentPlayer;
-
-    //seleccionando  icono cuando aprete
-    let arr = this.state.gameState.slice();
-    arr[row][col] = currentPlayer;
-    this.setState({gameState:arr});
-    //cambiar al otro jugador
-    let nextPlayer=(currentPlayer === 1)? -1 : 1;
-    this.setState({currentPlayer:nextPlayer});
-
-    //alert del ganadore
-
-    let winner = this.getWinner();
-    if (winner ===1){Alert.alert("l@ ganadr@ es jugador@ Batichica");this.initializerGame();}
-    
-    else if (winner===-1) { Alert.alert("l@ ganadr@ es jugador@ Huason");this.initializerGame();}
-
-   }
-   newGAme(){
-     this.initializerGame();
+   
+     newGAmePress=()=>{
+      this.initializerGame();
    }
 
 
@@ -150,9 +152,9 @@ export default class App extends Component {
         </TouchableOpacity >
 
       </View>
-       
-       <Button Style={styles.Button} title="Nueva pelea" onPress= {this.newGAme()}  /> 
-    
+       <View style={styles.boton} >
+          <Button  title="Nueva pelea" onPress={this.newGAmePress}/> 
+       </View>
 
     </View>
   );
@@ -175,8 +177,9 @@ const styles = StyleSheet.create({
     height:80,
 
   },
-  Button: {
-    backgroundColor:602080,
+  boton: {
+   paddingTop:68,
+    
   }
 
 });
