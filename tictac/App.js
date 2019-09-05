@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
-import { StyleSheet, Text, View,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,Image,TouchableOpacity,Button, Alert} from 'react-native';
+// import SweetAlert from 'react-native-sweet-alert';
 
 export default class App extends Component {
   constructor(props){
@@ -20,9 +21,40 @@ export default class App extends Component {
   componentDidMount(){
     this.initializerGame();
   }
+  getWinner(){
+
+    const NUM_TILES=3;
+    let arr= this.state.gameState;
+    let sum;
+    //iteramos las row
+
+    for(let i=0;i<NUM_TILES;i++){
+      sum=arr[i][0]+arr[i][1]+arr[i][2];
+      if(sum===3){return 1;}
+      else if(sum=== -3){return -1;}
+    }
+    //iteramos col
+    for(let i=0;i<NUM_TILES;i++){
+      sum=arr[0][i]+arr[1][i]+arr[2][i];
+      if(sum===3){return 1;}
+      else if(sum=== -3){return -1;}
+    }
+    //revisamos diagonales
+    sum=arr[0][0]+arr[1][1]+arr[2][2];
+    if(sum===3){return 1;}
+    else if(sum=== -3){return -1;}
+
+    sum=arr[2][0]+arr[1][1]+arr[0][2];
+    if(sum===3){return 1;}
+    else if(sum=== -3){return -1;}
+
+  return 0;
+  
+   }
+  
 
    initializerGame = () =>{
-     this.setState ({ gameState: [
+     this.setState({ gameState: [
       [0,0,0],
       [0,0,0],
       [0,0,0]
@@ -41,7 +73,7 @@ export default class App extends Component {
      }
 
 
-
+ 
    }
    onTilePress(row,col){
     // no dejar que cambie el icono despues de apretado
@@ -60,7 +92,16 @@ export default class App extends Component {
     let nextPlayer=(currentPlayer === 1)? -1 : 1;
     this.setState({currentPlayer:nextPlayer});
 
+    //alert del ganadore
 
+    let winner = this.getWinner();
+    if (winner ===1){Alert.alert("l@ ganadr@ es jugador@ Batichica");this.initializerGame();}
+    
+    else if (winner===-1) { Alert.alert("l@ ganadr@ es jugador@ Huason");this.initializerGame();}
+
+   }
+   newGAme(){
+     this.initializerGame();
    }
 
 
@@ -109,6 +150,8 @@ export default class App extends Component {
         </TouchableOpacity >
 
       </View>
+       
+       <Button Style={styles.Button} title="Nueva pelea" onPress= {this.newGAme()}  /> 
     
 
     </View>
@@ -118,7 +161,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundImg:url('https://i.ibb.co/gJTm3SM/gotham3.jpg'),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -131,6 +174,9 @@ const styles = StyleSheet.create({
     width:80,
     height:80,
 
+  },
+  Button: {
+    backgroundColor:602080,
   }
 
 });
